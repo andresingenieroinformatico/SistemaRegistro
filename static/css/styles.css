@@ -63,7 +63,7 @@ header {
 }
 
 .navbar {
-    height: 4.5rem;
+    height: 5.5rem; /* Slightly taller */
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -104,28 +104,56 @@ main {
 
 /* Sections */
 .hero {
-    text-align: center;
-    padding: 6rem 0;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    text-align: left;
+    padding: 8rem 0;
     animation: slideUp 0.6s ease-out;
 }
 
-@keyframes slideUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
+.hero-image {
+    width: 100%;
+    border-radius: var(--radius-lg);
+    box-shadow: 20px 20px 60px rgba(0,0,0,0.05);
+    background: white;
 }
 
 .hero h1 {
-    font-size: 3.5rem;
+    font-size: 4rem;
     margin-bottom: 1.5rem;
-    line-height: 1.1;
+    line-height: 1.05;
 }
 
 .hero p {
     font-size: 1.25rem;
     color: var(--text-muted);
-    max-width: 600px;
-    margin: 0 auto 2.5rem;
+    margin-bottom: 2.5rem;
 }
+
+/* Feature Grid for Landing */
+.feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin: 4rem 0 8rem;
+}
+
+.feature-card {
+    background: white;
+    padding: 2rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+}
+
+.feature-card span {
+    color: var(--primary);
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
 
 /* Cards & Forms */
 .card {
@@ -228,6 +256,11 @@ main {
     border-color: var(--secondary);
 }
 
+/* Dashboard Improvements */
+.dashboard-container {
+    padding: 4rem 2rem; /* Added generous spacing */
+}
+
 /* Tables */
 .table-wrapper {
     background: var(--surface);
@@ -305,4 +338,63 @@ tr:hover td {
 
 .footer-nav a:hover {
     color: var(--primary);
+}
+
+/* Premium Fullscreen Overlay Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(255, 255, 255, 0.7); /* Lighter, cleaner overlay */
+    backdrop-filter: blur(12px) saturate(180%);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    width: 90%;
+    max-width: 460px;
+    padding: 3rem;
+    border-radius: 1.5rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+    border: 1px solid var(--border);
+    position: relative;
+    transform: translateY(0);
+    animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes slideUpModal {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+.modal-header h3 {
+    font-size: 1.75rem;
+}
+
+.modal-footer {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-top: 2.5rem;
 }
