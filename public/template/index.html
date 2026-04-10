@@ -3,49 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nocturne Registry | Inicio</title>
-    <meta name="description" content="Gestión profesional de usuarios con estética editorial.">
+    <title>Sistema de Registro | Inicio</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../static/css/styles.css">
 </head>
 <body>
     <header>
-        <div class="logo">
-            <span class="material-symbols-outlined logo-icon">account_circle</span>
-            Nocturne Registry
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="logo">
+                    <span class="material-symbols-outlined">how_to_reg</span>
+                    Sistema de Registro
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html" class="active">Inicio</a></li>
+                    <li><a href="registro.html">Registro</a></li>
+                    <li><a href="login.html">Acceso</a></li>
+                </ul>
+            </nav>
         </div>
-        <nav>
-            <ul>
-                <li><a href="index.html" class="active">Inicio</a></li>
-                <li><a href="registro.html">Registro</a></li>
-                <li><a href="login.html">Iniciar Sesión</a></li>
-            </ul>
-        </nav>
     </header>
 
-    <div class="container" style="margin-top: 2rem;">
-        <main>
-            <section class="hero">
-                <div class="hero-bg">
-                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2564&auto=format&fit=crop" alt="Abstract Background">
-                    <div class="hero-gradient"></div>
+    <main class="container">
+        <section class="hero">
+            <div class="hero-content">
+                <h1>El <span class="text-gradient">Futuro</span> de la Gestión de Usuarios</h1>
+                <p>Organiza, registra y administra identidades con una plataforma diseñada para la claridad absoluta y el alto rendimiento.</p>
+                <div style="display: flex; gap: 1rem;">
+                    <a href="registro.html" class="btn btn-primary">Empezar Registro</a>
+                    <a href="login.html" class="btn btn-outline">Acceder al Sistema</a>
                 </div>
-                <div class="hero-content">
-                    <h2>The <span class="text-gradient">Ethereal</span> Archive.</h2>
-                    <p>Un santuario digital para la gestión de identidades modernas a través de profundidades estratificadas y diseño editorial.</p>
-                    <div style="display: flex; gap: 1rem;">
-                        <a href="registro.html" class="btn btn-primary">Empezar Registro</a>
-                    </div>
-                </div>
-            </section>
-        </main>
+            </div>
+            <div class="hero-image-container">
+                <img src="../../static/image/hero.png" alt="Sistema de Registro Dashboard" class="hero-image">
+            </div>
+        </section>
 
-        <footer class="footer">
-            &copy; 2026 Nocturne Pro. Mejorado con StitchMCP.
-        </footer>
-    </div>
+        <section class="feature-grid">
+            <div class="feature-card">
+                <span class="material-symbols-outlined">security</span>
+                <h4>Seguridad Total</h4>
+                <p>Tus datos están protegidos con los más altos estándares de cifrado y privacidad.</p>
+            </div>
+            <div class="feature-card">
+                <span class="material-symbols-outlined">speed</span>
+                <h4>Rendimiento</h4>
+                <p>Una interfaz ligera que asegura fluidez en cada interacción administrativa.</p>
+            </div>
+            <div class="feature-card">
+                <span class="material-symbols-outlined">analytics</span>
+                <h4>Control Central</h4>
+                <p>Visualiza y gestiona todos tus registros desde un panel de control intuitivo.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2026 Sistema de Registro. Innovación en gestión de datos.</p>
+                <ul class="footer-nav">
+                    <li><a href="registro.html">Registro</a></li>
+                    <li><a href="login.html">Acceso</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../static/js/main.js"></script>
 </body>
 </html>
