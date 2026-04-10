@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista | Nocturne Registry</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../static/css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <span class="material-symbols-outlined logo-icon">account_circle</span>
+            Nocturne Registry
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="registro.html">Registro</a></li>
+                <li><a href="lista.html" class="active">Usuarios</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="container" style="margin-top: 8rem;">
+        <main>
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2.5rem;">
+                <div>
+                    <h3 style="font-size: 2.5rem;">El <span class="text-gradient">Archivo</span></h3>
+                    <p style="color: var(--on-surface-variant);">Listado de identidades registradas en el sistema.</p>
+                </div>
+                <a href="registro.html" class="btn btn-primary">Añadir Nueva</a>
+            </div>
+
+            <div class="table-container glass-panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Identidad</th>
+                            <th>Contacto</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 1rem;">
+                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--surface-highest); display: flex; align-items: center; justify-content: center; border: 2px solid var(--primary);">
+                                        <span class="material-symbols-outlined" style="font-size: 1.25rem;">person</span>
+                                    </div>
+                                    <span style="font-weight: 600;">Alice Smith</span>
+                                </div>
+                            </td>
+                            <td>alice.s@nocturne.io</td>
+                            <td><span class="status-badge">Activo</span></td>
+                            <td><span class="material-symbols-outlined" style="cursor: pointer; color: var(--on-surface-variant);">more_vert</span></td>
+                        </tr>
+                        <!-- Datos adicionales... -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <footer class="footer">
+            &copy; 2026 Nocturne Pro. Mejorado con StitchMCP.
+        </footer>
+    </div>
+</body>
+</html>
