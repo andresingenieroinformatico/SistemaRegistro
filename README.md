@@ -114,5 +114,5 @@ SistemaRegistro/
 
 ---
 
-**Desarrollado por Andres Garcia**
+**Desarrollado por Andres Garcia jose torres y david Aldana**
 *Ingeniería e Innovación en cada línea de código.*
