@@ -10,16 +10,32 @@ switch ($method) {
         // List all users or filter by status
         try {
             if (!empty($_GET['status'])) {
-                $stmt = $pdo->prepare("SELECT id, nombre, correo, fecha, status FROM usuarios WHERE status = ? ORDER BY id DESC");
+                $stmt = $pdo->prepare("SELECT id, nombre, correo, fecha, status, role FROM usuarios WHERE status = ? ORDER BY id DESC");
                 $stmt->execute([trim($_GET['status'])]);
             } else {
-                $stmt = $pdo->query("SELECT id, nombre, correo, fecha, status FROM usuarios ORDER BY id DESC");
+                $stmt = $pdo->query("SELECT id, nombre, correo, fecha, status, role FROM usuarios ORDER BY id DESC");
             }
             $users = $stmt->fetchAll();
-            echo json_encode($users);
-        } catch (\Exception $e) {
-            echo json_encode(['error' => 'Error al obtener usuarios: ' . $e->getMessage()]);
+        } catch (\PDOException $e) {
+            if (strpos($e->getMessage(), 'Unknown column') !== false && strpos($e->getMessage(), 'role') !== false) {
+                if (!empty($_GET['status'])) {
+                    $stmt = $pdo->prepare("SELECT id, nombre, correo, fecha, status FROM usuarios WHERE status = ? ORDER BY id DESC");
+                    $stmt->execute([trim($_GET['status'])]);
+                } else {
+                    $stmt = $pdo->query("SELECT id, nombre, correo, fecha, status FROM usuarios ORDER BY id DESC");
+                }
+                $users = $stmt->fetchAll();
+                foreach ($users as &$user) {
+                    $user['role'] = 'user';
+                }
+                unset($user);
+            } else {
+                echo json_encode(['error' => 'Error al obtener usuarios: ' . $e->getMessage()]);
+                exit;
+            }
         }
+
+        echo json_encode($users);
         break;
 
     case 'PUT':

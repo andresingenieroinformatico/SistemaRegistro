@@ -37,9 +37,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        // Insert new user
-        $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, correo, password, status) VALUES (?, ?, ?, ?)");
-        $stmt->execute([$nombre, $correo, $password, $status]);
+        // Insert new normal user
+        try {
+            $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, correo, password, status, role) VALUES (?, ?, ?, ?, 'user')");
+            $stmt->execute([$nombre, $correo, $password, $status]);
+        } catch (\PDOException $e) {
+            if (strpos($e->getMessage(), 'Unknown column') !== false && strpos($e->getMessage(), 'role') !== false) {
+                $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, correo, password, status) VALUES (?, ?, ?, ?)");
+                $stmt->execute([$nombre, $correo, $password, $status]);
+            } else {
+                throw $e;
+            }
+        }
 
         echo json_encode(['message' => 'Usuario registrado con éxito.']);
     } catch (\Exception $e) {

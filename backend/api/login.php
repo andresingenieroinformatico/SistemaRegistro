@@ -30,7 +30,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password'])) {
-            // Don't send the password back to the client
+            // Ensure role is defined for older records
+            if (empty($user['role'])) {
+                $user['role'] = 'user';
+            }
             unset($user['password']);
             echo json_encode(['message' => 'Login exitoso', 'user' => $user]);
         } else {

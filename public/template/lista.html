@@ -40,10 +40,10 @@
                 <h2 style="font-size: 2rem;">Archivo de <span class="text-gradient">Usuarios</span></h2>
                 <p style="color: var(--text-muted);">Gestiona los accesos y roles de la plataforma.</p>
             </div>
-            <a href="registro.html" class="btn btn-primary">
+            <button type="button" id="openCreateUserBtn" class="btn btn-primary">
                 <span class="material-symbols-outlined" style="margin-right: 0.5rem;">add</span>
                 Nuevo Usuario
-            </a>
+            </button>
         </div>
 
         <div class="table-wrapper">
@@ -73,6 +73,37 @@
             </div>
         </div>
     </footer>
+
+    <!-- Create User Modal -->
+    <div class="modal" id="createModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Crear <span class="text-gradient">Nuevo Usuario</span></h3>
+            </div>
+            <form id="adminCreateForm">
+                <div id="createError" class="alert-error" style="display: none;">
+                    <span class="material-symbols-outlined" style="font-size: 1.25rem;">error</span>
+                    <span id="createErrorMessage"></span>
+                </div>
+                <div class="form-group">
+                    <label for="adminNombre">Nombre Completo</label>
+                    <input type="text" id="adminNombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminCorreo">Correo Electrónico</label>
+                    <input type="email" id="adminCorreo" required>
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Contraseña</label>
+                    <input type="password" id="adminPassword" required>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeCreateModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary" style="flex: 1;">Crear Usuario</button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <!-- Edit Modal -->
     <div class="modal" id="editModal">

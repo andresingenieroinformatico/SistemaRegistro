@@ -9,8 +9,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const registroForm = document.getElementById('registroForm');
     const loginForm = document.getElementById('loginForm');
     const editForm = document.getElementById('editForm');
+    const createForm = document.getElementById('adminCreateForm');
+    const openCreateUserBtn = document.getElementById('openCreateUserBtn');
     const userTableBody = document.getElementById('userTableBody');
     const logoutBtn = document.getElementById('logoutBtn');
+    const logoutBtnMobile = document.getElementById('logoutBtnMobile');
 
     // --- Helper Functions ---
 
@@ -25,17 +28,29 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- Protection Middleware ---
-    if (userTableBody && !localStorage.getItem('currentUser')) {
-        window.location.href = 'login.html';
+    const currentUser = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')) : null;
+
+    if (userTableBody) {
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        } else if (currentUser.role !== 'admin') {
+            window.location.href = 'user.html';
+        }
     }
 
     // --- Logout Logic ---
+    const handleLogout = (e) => {
+        e.preventDefault();
+        localStorage.removeItem('currentUser');
+        window.location.href = 'index.html';
+    };
+
     if (logoutBtn) {
-        logoutBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            localStorage.removeItem('currentUser');
-            window.location.href = 'index.html';
-        });
+        logoutBtn.addEventListener('click', handleLogout);
+    }
+
+    if (logoutBtnMobile) {
+        logoutBtnMobile.addEventListener('click', handleLogout);
     }
 
     // --- Registration Logic ---
@@ -105,11 +120,54 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (result.user) {
                     localStorage.setItem('currentUser', JSON.stringify(result.user));
-                    window.location.href = 'lista.html';
+                    const isAdmin = result.user.role && result.user.role === 'admin';
+                    window.location.href = isAdmin ? 'lista.html' : 'user.html';
                 } else {
                     errorMsg.textContent = result.error || 'Credenciales inválidas.';
                     errorDiv.style.display = 'flex';
                 }
+            } catch (error) {
+                errorMsg.textContent = 'Error al conectar con el servidor.';
+                errorDiv.style.display = 'flex';
+            }
+        });
+    }
+
+    if (openCreateUserBtn) {
+        openCreateUserBtn.addEventListener('click', () => {
+            document.getElementById('createModal').classList.add('active');
+        });
+    }
+
+    if (createForm) {
+        createForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const nombre = document.getElementById('adminNombre').value;
+            const correo = document.getElementById('adminCorreo').value;
+            const password = document.getElementById('adminPassword').value;
+            const errorDiv = document.getElementById('createError');
+            const errorMsg = document.getElementById('createErrorMessage');
+
+            errorDiv.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_BASE}/registro.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre, correo, password })
+                });
+
+                const result = await response.json();
+
+                if (result.error) {
+                    errorMsg.textContent = result.error;
+                    errorDiv.style.display = 'flex';
+                    return;
+                }
+
+                createForm.reset();
+                document.getElementById('createModal').classList.remove('active');
+                renderUsers();
             } catch (error) {
                 errorMsg.textContent = 'Error al conectar con el servidor.';
                 errorDiv.style.display = 'flex';
@@ -162,6 +220,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Rendering Logic ---
+
+    const userPageTitle = document.getElementById('userPageTitle');
+    const userPageEmail = document.getElementById('userPageEmail');
+    if (userPageTitle && currentUser) {
+        if (currentUser.role === 'admin') {
+            window.location.href = 'lista.html';
+        }
+        userPageTitle.textContent = currentUser.nombre || 'Usuario';
+        if (userPageEmail) {
+            userPageEmail.textContent = currentUser.correo || '';
+        }
+    }
 
     if (userTableBody) {
         renderUsers();
@@ -219,6 +289,10 @@ function openEditModal(id, nombre, correo) {
 
 function closeModal() {
     document.getElementById('editModal').classList.remove('active');
+}
+
+function closeCreateModal() {
+    document.getElementById('createModal').classList.remove('active');
 }
 
 async function deleteUser(id) {
