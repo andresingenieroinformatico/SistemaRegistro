@@ -19,7 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchUsers = async () => {
         try {
-            const response = await fetch(`${API_BASE}/usuarios.php`);
+            const roleQuery = currentUser && currentUser.role === 'docente' ? '?role=estudiante' : '';
+            const response = await fetch(`${API_BASE}/usuarios.php${roleQuery}`);
             return await response.json();
         } catch (error) {
             console.error('Error fetching users:', error);
@@ -33,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (userTableBody) {
         if (!currentUser) {
             window.location.href = 'login.html';
-        } else if (currentUser.role !== 'admin') {
+        } else if (currentUser.role !== 'docente') {
             window.location.href = 'user.html';
         }
     }
@@ -58,7 +59,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (registroForm) {
         registroForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const nombre = document.getElementById('nombre').value;
+            const primer_nombre = document.getElementById('primer_nombre').value;
+            const segundo_nombre = document.getElementById('segundo_nombre').value;
+            const primer_apellido = document.getElementById('primer_apellido').value;
+            const segundo_apellido = document.getElementById('segundo_apellido').value;
+            const edad = document.getElementById('edad').value;
+            const ocupacion = document.getElementById('ocupacion').value;
+            const cedula = document.getElementById('cedula').value;
             const correo = document.getElementById('correo').value;
             const password = document.getElementById('password').value;
             const errorDiv = document.getElementById('registroError');
@@ -70,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`${API_BASE}/registro.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nombre, correo, password })
+                    body: JSON.stringify({ primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, ocupacion, cedula, correo, password })
                 });
 
                 const result = await response.json();
@@ -81,7 +88,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Visual transition before automatic redirect
                 const card = registroForm.closest('.card');
                 if (card) card.classList.add('animate-save');
                 
@@ -120,8 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (result.user) {
                     localStorage.setItem('currentUser', JSON.stringify(result.user));
-                    const isAdmin = result.user.role && result.user.role === 'admin';
-                    window.location.href = isAdmin ? 'lista.html' : 'user.html';
+                    const isDocente = result.user.role && result.user.role === 'docente';
+                    window.location.href = isDocente ? 'lista.html' : 'user.html';
                 } else {
                     errorMsg.textContent = result.error || 'Credenciales inválidas.';
                     errorDiv.style.display = 'flex';
@@ -142,9 +148,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (createForm) {
         createForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            const nombre = document.getElementById('adminNombre').value;
+            const primer_nombre = document.getElementById('adminPrimerNombre').value;
+            const segundo_nombre = document.getElementById('adminSegundoNombre').value;
+            const primer_apellido = document.getElementById('adminPrimerApellido').value;
+            const segundo_apellido = document.getElementById('adminSegundoApellido').value;
+            const edad = document.getElementById('adminEdad').value;
+            const ocupacion = document.getElementById('adminOcupacion').value;
+            const cedula = document.getElementById('adminCedula').value;
             const correo = document.getElementById('adminCorreo').value;
             const password = document.getElementById('adminPassword').value;
+            const role = document.getElementById('adminRole').value;
             const errorDiv = document.getElementById('createError');
             const errorMsg = document.getElementById('createErrorMessage');
 
@@ -154,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`${API_BASE}/registro.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nombre, correo, password })
+                    body: JSON.stringify({ primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, ocupacion, cedula, correo, password, role })
                 });
 
                 const result = await response.json();
@@ -180,8 +193,16 @@ document.addEventListener('DOMContentLoaded', () => {
         editForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const id = document.getElementById('editUserId').value;
-            const nuevoNombre = document.getElementById('editNombre').value;
-            const nuevoCorreo = document.getElementById('editCorreo').value;
+            const primer_nombre = document.getElementById('editPrimerNombre').value;
+            const segundo_nombre = document.getElementById('editSegundoNombre').value;
+            const primer_apellido = document.getElementById('editPrimerApellido').value;
+            const segundo_apellido = document.getElementById('editSegundoApellido').value;
+            const edad = document.getElementById('editEdad').value;
+            const ocupacion = document.getElementById('editOcupacion').value;
+            const cedula = document.getElementById('editCedula').value;
+            const correo = document.getElementById('editCorreo').value;
+            const role = document.getElementById('editRole').value;
+            const status = document.getElementById('editStatus').value;
             const errorDiv = document.getElementById('editError');
             const errorMsg = document.getElementById('editErrorMessage');
 
@@ -191,7 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`${API_BASE}/usuarios.php`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id, nombre: nuevoNombre, correo: nuevoCorreo })
+                    body: JSON.stringify({ id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, ocupacion, cedula, correo, role, status })
                 });
 
                 const result = await response.json();
@@ -202,11 +223,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     return;
                 }
 
-                // Update current user in local storage if they edited themselves
                 const currentUser = JSON.parse(localStorage.getItem('currentUser'));
                 if (currentUser && currentUser.id == id) {
-                    currentUser.nombre = nuevoNombre;
-                    currentUser.correo = nuevoCorreo;
+                    currentUser.primer_nombre = primer_nombre;
+                    currentUser.segundo_nombre = segundo_nombre;
+                    currentUser.primer_apellido = primer_apellido;
+                    currentUser.segundo_apellido = segundo_apellido;
+                    currentUser.edad = edad;
+                    currentUser.ocupacion = ocupacion;
+                    currentUser.cedula = cedula;
+                    currentUser.correo = correo;
+                    currentUser.role = role;
+                    currentUser.status = status;
                     localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 }
 
@@ -224,7 +252,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const userPageTitle = document.getElementById('userPageTitle');
     const userPageEmail = document.getElementById('userPageEmail');
     if (userPageTitle && currentUser) {
-        if (currentUser.role === 'admin') {
+        if (currentUser.role === 'docente') {
             window.location.href = 'lista.html';
         }
         userPageTitle.textContent = currentUser.nombre || 'Usuario';
@@ -243,11 +271,10 @@ async function renderUsers() {
     if (!userTableBody) return;
 
     try {
-        const response = await fetch('../../backend/api/usuarios.php');
-        const users = await response.json();
+        const users = await fetchUsers();
         
         if (!users || users.length === 0 || users.error) {
-            userTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 3rem; color: var(--text-muted);">No hay registros.</td></tr>`;
+            userTableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">No hay registros.</td></tr>`;
             return;
         }
 
@@ -258,14 +285,18 @@ async function renderUsers() {
                         <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--surface-low); display: flex; align-items: center; justify-content: center; color: var(--primary);">
                             <span class="material-symbols-outlined">person</span>
                         </div>
-                        <span style="font-weight: 600;">${user.nombre}</span>
+                        <span style="font-weight: 600;">${user.primer_nombre || ''} ${user.segundo_nombre || ''} ${user.primer_apellido || ''} ${user.segundo_apellido || ''}</span>
                     </div>
                 </td>
                 <td>${user.correo}</td>
-                <td><span class="badge ${user.status === 'Activo' ? 'badge-success' : 'badge-warning'}">${user.status}</span></td>
+                <td>${user.cedula || ''}</td>
+                <td>${user.edad || ''}</td>
+                <td>${user.ocupacion || ''}</td>
+                <td>${user.role || ''}</td>
+                <td><span class="badge ${user.status === 'Activo' ? 'badge-success' : 'badge-warning'}">${user.status || 'Inactivo'}</span></td>
                 <td>
                     <div style="display: flex; gap: 0.5rem;">
-                        <button class="btn btn-outline" style="padding: 0.5rem;" onclick="openEditModal('${user.id}', '${user.nombre}', '${user.correo}')">
+                        <button class="btn btn-outline" style="padding: 0.5rem;" onclick="openEditModal('${user.id}', '${user.primer_nombre || ''}', '${user.segundo_nombre || ''}', '${user.primer_apellido || ''}', '${user.segundo_apellido || ''}', '${user.edad || ''}', '${user.ocupacion || ''}', '${user.cedula || ''}', '${user.correo || ''}', '${user.role || 'estudiante'}', '${user.status || 'Inactivo'}')">
                             <span class="material-symbols-outlined" style="font-size: 1.25rem;">edit</span>
                         </button>
                         <button class="btn btn-outline" style="padding: 0.5rem;" onclick="deleteUser('${user.id}')">
@@ -280,10 +311,18 @@ async function renderUsers() {
     }
 }
 
-function openEditModal(id, nombre, correo) {
+function openEditModal(id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, ocupacion, cedula, correo, role, status) {
     document.getElementById('editUserId').value = id;
-    document.getElementById('editNombre').value = nombre;
+    document.getElementById('editPrimerNombre').value = primer_nombre;
+    document.getElementById('editSegundoNombre').value = segundo_nombre;
+    document.getElementById('editPrimerApellido').value = primer_apellido;
+    document.getElementById('editSegundoApellido').value = segundo_apellido;
+    document.getElementById('editEdad').value = edad;
+    document.getElementById('editOcupacion').value = ocupacion;
+    document.getElementById('editCedula').value = cedula;
     document.getElementById('editCorreo').value = correo;
+    document.getElementById('editRole').value = role;
+    document.getElementById('editStatus').value = status;
     document.getElementById('editModal').classList.add('active');
 }
 

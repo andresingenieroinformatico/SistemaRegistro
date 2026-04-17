@@ -14,11 +14,11 @@ $options = [
 ];
 
 try {
-     $pdo = new \PDO($dsn, $user, $pass, $options);
+    $pdo = new \PDO($dsn, $user, $pass, $options);
 } catch (\PDOException $e) {
-     header('Content-Type: application/json', true, 500);
-     echo json_encode(['error' => 'Error de conexión: ' . $e->getMessage()]);
-     exit;
+    header('Content-Type: application/json', true, 500);
+    echo json_encode(['error' => 'Error de conexión: ' . $e->getMessage()]);
+    exit;
 }
 
 // Allow CORS (Adjust for production)
@@ -30,33 +30,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-// Ensure role column exists and that an admin user is available.
-try {
-    $pdo->query("SELECT role FROM usuarios LIMIT 1");
-} catch (\PDOException $e) {
-    if (strpos($e->getMessage(), 'Unknown column') !== false && strpos($e->getMessage(), 'role') !== false) {
-        $pdo->exec("ALTER TABLE usuarios ADD COLUMN role VARCHAR(20) DEFAULT 'user'");
+// Ensure required columns exist and that a default docente user is available.
+$requiredColumns = [
+    'role' => "VARCHAR(20) DEFAULT 'estudiante'",
+    'primer_nombre' => 'VARCHAR(100) NOT NULL DEFAULT ""',
+    'segundo_nombre' => 'VARCHAR(100) DEFAULT NULL',
+    'primer_apellido' => 'VARCHAR(100) NOT NULL DEFAULT ""',
+    'segundo_apellido' => 'VARCHAR(100) DEFAULT NULL',
+    'cedula' => 'VARCHAR(50) DEFAULT NULL',
+    'edad' => 'INT DEFAULT NULL',
+    'ocupacion' => 'VARCHAR(100) DEFAULT NULL',
+];
+
+foreach ($requiredColumns as $column => $definition) {
+    try {
+        $stmt = $pdo->prepare("SHOW COLUMNS FROM usuarios LIKE ?");
+        $stmt->execute([$column]);
+        if (!$stmt->fetch()) {
+            $pdo->exec("ALTER TABLE usuarios ADD COLUMN $column $definition");
+        }
+    } catch (\PDOException $e) {
+        // Ignore errors if table doesn't exist yet or if migration fails.
     }
 }
 
-$defaultAdminEmail = 'admin@admin.com';
-$defaultAdminPassword = 'Admin1234!';
-$defaultAdminName = 'Administrador';
+$defaultTeacherEmail = 'docente@docente.com';
+$defaultTeacherPassword = 'Docente123!';
+$defaultTeacherName = 'Docente Principal';
 
 try {
     $stmt = $pdo->prepare("SELECT id, role FROM usuarios WHERE correo = ? LIMIT 1");
-    $stmt->execute([$defaultAdminEmail]);
-    $adminUser = $stmt->fetch();
+    $stmt->execute([$defaultTeacherEmail]);
+    $teacherUser = $stmt->fetch();
 
-    if (!$adminUser) {
-        $hashedPassword = password_hash($defaultAdminPassword, PASSWORD_BCRYPT);
-        $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, correo, password, status, role) VALUES (?, ?, ?, ?, 'admin')");
-        $stmt->execute([$defaultAdminName, $defaultAdminEmail, $hashedPassword, 'Activo']);
-    } elseif (empty($adminUser['role']) || $adminUser['role'] !== 'admin') {
-        $stmt = $pdo->prepare("UPDATE usuarios SET role = 'admin' WHERE id = ?");
-        $stmt->execute([$adminUser['id']]);
+    if (!$teacherUser) {
+        $hashedPassword = password_hash($defaultTeacherPassword, PASSWORD_BCRYPT);
+        $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, primer_nombre, primer_apellido, correo, password, status, role) VALUES (?, ?, ?, ?, ?, 'Activo', 'docente')");
+        $stmt->execute([$defaultTeacherName, 'Docente', 'Principal', $defaultTeacherEmail, $hashedPassword]);
+    } elseif (empty($teacherUser['role']) || $teacherUser['role'] !== 'docente') {
+        $stmt = $pdo->prepare("UPDATE usuarios SET role = 'docente' WHERE id = ?");
+        $stmt->execute([$teacherUser['id']]);
     }
 } catch (\Exception $e) {
-    // Ignore admin bootstrap failures to avoid blocking normal requests.
+    // Ignore teacher bootstrap failures to avoid blocking normal requests.
 }
 ?>

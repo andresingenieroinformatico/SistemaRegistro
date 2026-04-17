@@ -32,7 +32,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($user && password_verify($password, $user['password'])) {
             // Ensure role is defined for older records
             if (empty($user['role'])) {
-                $user['role'] = 'user';
+                $user['role'] = 'estudiante';
+            }
+            if ($user['role'] === 'admin') {
+                $user['role'] = 'docente';
             }
             unset($user['password']);
             echo json_encode(['message' => 'Login exitoso', 'user' => $user]);
