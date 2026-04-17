@@ -56,6 +56,54 @@ sequenceDiagram
     end
 ```
 
+### Diagrama UML de Clases (Modelo de Dominio)
+Este diagrama describe las entidades principales del sistema y sus relaciones.
+
+```mermaid
+classDiagram
+    class Usuario {
+        +int id
+        +string nombre
+        +string correo
+        +string password
+        +string status
+        +datetime fecha
+        +login()
+        +registrar()
+        +actualizar()
+        +eliminar()
+    }
+
+    class LoginController {
+        +login(correo, password)
+        +validarCredenciales()
+    }
+
+    class RegistroController {
+        +registrar(nombre, correo, password)
+        +validarDatosRegistro()
+    }
+
+    class UsuarioController {
+        +listar(status)
+        +actualizarUsuario(id, datos)
+        +eliminarUsuario(id)
+    }
+
+    class Database {
+        +connect()
+        +query(sql)
+        +prepare(sql)
+    }
+
+    Usuario <|-- UsuarioController : gestiona
+    Usuario <|-- LoginController : autentica
+    Usuario <|-- RegistroController : crea
+    LoginController --> Database : usa
+    RegistroController --> Database : usa
+    UsuarioController --> Database : usa
+```
+
 ---
 
 ## 🛠️ Tecnologías Utilizadas
