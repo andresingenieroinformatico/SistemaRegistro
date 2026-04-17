@@ -46,6 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const nombre = document.getElementById('nombre').value;
             const correo = document.getElementById('correo').value;
             const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('registroError');
+            const errorMsg = document.getElementById('registroErrorMessage');
+
+            errorDiv.style.display = 'none';
 
             try {
                 const response = await fetch(`${API_BASE}/registro.php`, {
@@ -57,7 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
 
                 if (result.error) {
-                    return alert(result.error);
+                    errorMsg.textContent = result.error;
+                    errorDiv.style.display = 'flex';
+                    return;
                 }
 
                 // Visual transition before automatic redirect
@@ -69,7 +75,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     window.location.href = currentPath + 'login.html';
                 }, 600);
             } catch (error) {
-                alert('Error al conectar con el servidor.');
+                errorMsg.textContent = 'Error al conectar con el servidor.';
+                errorDiv.style.display = 'flex';
             }
         });
     }
@@ -81,6 +88,11 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const correo = document.getElementById('correo').value;
             const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            const errorMsg = document.getElementById('errorMessage');
+
+            // Hide previous errors
+            errorDiv.style.display = 'none';
 
             try {
                 const response = await fetch(`${API_BASE}/login.php`, {
@@ -95,10 +107,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('currentUser', JSON.stringify(result.user));
                     window.location.href = 'lista.html';
                 } else {
-                    alert(result.error || 'Credenciales inválidas.');
+                    errorMsg.textContent = result.error || 'Credenciales inválidas.';
+                    errorDiv.style.display = 'flex';
                 }
             } catch (error) {
-                alert('Error al conectar con el servidor.');
+                errorMsg.textContent = 'Error al conectar con el servidor.';
+                errorDiv.style.display = 'flex';
             }
         });
     }
@@ -110,6 +124,10 @@ document.addEventListener('DOMContentLoaded', () => {
             const id = document.getElementById('editUserId').value;
             const nuevoNombre = document.getElementById('editNombre').value;
             const nuevoCorreo = document.getElementById('editCorreo').value;
+            const errorDiv = document.getElementById('editError');
+            const errorMsg = document.getElementById('editErrorMessage');
+
+            errorDiv.style.display = 'none';
 
             try {
                 const response = await fetch(`${API_BASE}/usuarios.php`, {
@@ -121,7 +139,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const result = await response.json();
 
                 if (result.error) {
-                    return alert(result.error);
+                    errorMsg.textContent = result.error;
+                    errorDiv.style.display = 'flex';
+                    return;
                 }
 
                 // Update current user in local storage if they edited themselves
@@ -135,7 +155,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 closeModal();
                 renderUsers();
             } catch (error) {
-                alert('Error al actualizar el usuario.');
+                errorMsg.textContent = 'Error al actualizar el usuario.';
+                errorDiv.style.display = 'flex';
             }
         });
     }
@@ -218,4 +239,3 @@ async function deleteUser(id) {
         }
     }
 }
-

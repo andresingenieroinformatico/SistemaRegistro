@@ -33,6 +33,10 @@
             <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem; font-size: 0.875rem;">Panel de control centralizado.</p>
             
             <form id="loginForm">
+                <div id="loginError" class="alert-error" style="display: none;">
+                    <span class="material-symbols-outlined" style="font-size: 1.25rem;">error</span>
+                    <span id="errorMessage"></span>
+                </div>
                 <div class="form-group">
                     <label for="correo">Correo Electrónico</label>
                     <input type="email" id="correo" name="correo" placeholder="correo@ejemplo.com" required>

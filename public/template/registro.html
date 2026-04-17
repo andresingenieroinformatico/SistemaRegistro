@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.symbols.outlined&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../static/css/styles.css">
 </head>
@@ -33,6 +34,10 @@
             <p style="text-align: center; color: var(--text-muted); margin-bottom: 2rem; font-size: 0.875rem;">Completa tus datos para empezar.</p>
             
             <form id="registroForm">
+                <div id="registroError" class="alert-error" style="display: none;">
+                    <span class="material-symbols-outlined" style="font-size: 1.25rem;">error</span>
+                    <span id="registroErrorMessage"></span>
+                </div>
                 <div class="form-group">
                     <label for="nombre">Nombre Completo</label>
                     <input type="text" id="nombre" name="nombre" placeholder="Andres Garcia" required>
