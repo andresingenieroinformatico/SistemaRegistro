@@ -19,8 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const fetchUsers = async () => {
         try {
-            const roleQuery = currentUser && currentUser.role === 'docente' ? '?role=estudiante' : '';
-            const response = await fetch(`${API_BASE}/usuarios.php${roleQuery}`);
+            const response = await fetch(`${API_BASE}/usuarios.php`);
             return await response.json();
         } catch (error) {
             console.error('Error fetching users:', error);

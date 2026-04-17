@@ -10,6 +10,7 @@ Una plataforma web de alto rendimiento y estética premium diseñada para la ges
 -   **Seguridad**: Encriptación de contraseñas mediante `password_hash` de PHP.
 -   **UI Refinada**: Mensajes de error y validaciones integrados directamente en los formularios (`inline`), eliminando las alertas intrusivas del navegador.
 -   **Gestión de Datos (CRUD)**: Sistema completo para listar, crear, editar y eliminar usuarios con persistencia real.
+-   **Roles dinámicos**: `docente` / `estudiante` con selección desplegable en la interfaz de administración.
 -   **Diseño Modern Zen**: Interfaz de alta gama basada en `glassmorphism`, tipografía Inter y una paleta de colores sofisticada.
 
 ---
@@ -24,10 +25,18 @@ erDiagram
     usuarios {
         int id PK "Auto Increment"
         varchar nombre "Nombre Completo"
+        varchar primer_nombre "Primer Nombre"
+        varchar segundo_nombre "Segundo Nombre"
+        varchar primer_apellido "Primer Apellido"
+        varchar segundo_apellido "Segundo Apellido"
         varchar correo UK "Único / Indexado"
         varchar password "Hash Seguro"
-        timestamp fecha "Fecha Registro"
+        varchar cedula "Documento"
+        int edad "Edad"
+        varchar ocupacion "Ocupación"
         varchar status "Activo / Pendiente"
+        varchar role "docente / estudiante"
+        timestamp fecha "Fecha Registro"
     }
 ```
 
@@ -48,8 +57,15 @@ classDiagram
     class Usuario {
         - id: int
         - nombre: string
+        - primer_nombre: string
+        - segundo_nombre: string
+        - primer_apellido: string
+        - segundo_apellido: string
         - correo: string
         - password: string
+        - cedula: string
+        - edad: int
+        - ocupacion: string
         - fecha: timestamp
         - status: string
         - role: string
