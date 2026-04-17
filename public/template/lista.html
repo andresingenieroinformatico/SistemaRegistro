@@ -50,11 +50,14 @@
             <table>
                 <thead>
                     <tr>
-                        <th>Nombre</th>
+                        <th>Avatar</th>
+                        <th>Primer Nombre</th>
+                        <th>Segundo Nombre</th>
+                        <th>Primer Apellido</th>
+                        <th>Segundo Apellido</th>
                         <th>Correo</th>
                         <th>Cédula</th>
                         <th>Edad</th>
-                        <th>Ocupación</th>
                         <th>Rol</th>
                         <th>Estado</th>
                         <th>Acción</th>
@@ -110,10 +113,6 @@
                     <input type="number" id="adminEdad" min="1" required>
                 </div>
                 <div class="form-group">
-                    <label for="adminOcupacion">Ocupación</label>
-                    <input type="text" id="adminOcupacion" required>
-                </div>
-                <div class="form-group">
                     <label for="adminCedula">Cédula</label>
                     <input type="text" id="adminCedula" required>
                 </div>
@@ -122,15 +121,15 @@
                     <input type="email" id="adminCorreo" required>
                 </div>
                 <div class="form-group">
-                    <label for="adminPassword">Contraseña</label>
-                    <input type="password" id="adminPassword" required>
-                </div>
-                <div class="form-group">
                     <label for="adminRole">Rol</label>
                     <select id="adminRole" required>
                         <option value="estudiante">Estudiante</option>
                         <option value="docente">Docente</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label for="adminPassword">Contraseña</label>
+                    <input type="password" id="adminPassword" required>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeCreateModal()">Cancelar</button>
@@ -171,10 +170,6 @@
                 <div class="form-group">
                     <label for="editEdad">Edad</label>
                     <input type="number" id="editEdad" min="1" required>
-                </div>
-                <div class="form-group">
-                    <label for="editOcupacion">Ocupación</label>
-                    <input type="text" id="editOcupacion" required>
                 </div>
                 <div class="form-group">
                     <label for="editCedula">Cédula</label>

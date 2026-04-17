@@ -1,7 +1,7 @@
 <?php
 // Database configuration
 $host = 'localhost';
-$db   = 'sistema_registro';
+$db   = 'sistemaregistro';
 $user = 'root';
 $pass = ''; // Default XAMPP password is empty
 $charset = 'utf8mb4';

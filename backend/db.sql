@@ -13,7 +13,6 @@ CREATE TABLE IF NOT EXISTS usuarios (
     password VARCHAR(255) NOT NULL,
     cedula VARCHAR(50) DEFAULT NULL,
     edad INT DEFAULT NULL,
-    ocupacion VARCHAR(100) DEFAULT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     status VARCHAR(20) DEFAULT 'Activo',
     role VARCHAR(20) DEFAULT 'estudiante'

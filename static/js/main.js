@@ -5,6 +5,27 @@
 
 const API_BASE = '../../backend/api';
 
+const fetchUsers = async () => {
+    try {
+        const response = await fetch(`${API_BASE}/usuarios.php`);
+        const users = await response.json();
+        if (users.error) {
+            console.error('Error fetching users:', users.error);
+            return { error: users.error };
+        }
+        return Array.isArray(users) ? users : [];
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        return { error: 'No se pudo conectar al servidor de usuarios.' };
+    }
+};
+
+const getUserInitials = (user) => {
+    const first = user.primer_nombre ? user.primer_nombre.trim().charAt(0).toUpperCase() : '';
+    const last = user.primer_apellido ? user.primer_apellido.trim().charAt(0).toUpperCase() : '';
+    return `${first}${last}` || 'U';
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     const registroForm = document.getElementById('registroForm');
     const loginForm = document.getElementById('loginForm');
@@ -17,16 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Helper Functions ---
 
-    const fetchUsers = async () => {
-        try {
-            const roleQuery = currentUser && currentUser.role === 'docente' ? '?role=estudiante' : '';
-            const response = await fetch(`${API_BASE}/usuarios.php${roleQuery}`);
-            return await response.json();
-        } catch (error) {
-            console.error('Error fetching users:', error);
-            return [];
-        }
-    };
+    const getUrlParam = (name) => new URLSearchParams(window.location.search).get(name);
+    const editUserIdFromQuery = getUrlParam('id');
 
     // --- Protection Middleware ---
     const currentUser = localStorage.getItem('currentUser') ? JSON.parse(localStorage.getItem('currentUser')) : null;
@@ -36,6 +49,18 @@ document.addEventListener('DOMContentLoaded', () => {
             window.location.href = 'login.html';
         } else if (currentUser.role !== 'docente') {
             window.location.href = 'user.html';
+        }
+    }
+
+    if (editForm) {
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        } else if (currentUser.role !== 'docente') {
+            window.location.href = 'user.html';
+        }
+
+        if (editUserIdFromQuery) {
+            loadUserForEdit(editUserIdFromQuery);
         }
     }
 
@@ -64,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const primer_apellido = document.getElementById('primer_apellido').value;
             const segundo_apellido = document.getElementById('segundo_apellido').value;
             const edad = document.getElementById('edad').value;
-            const ocupacion = document.getElementById('ocupacion').value;
             const cedula = document.getElementById('cedula').value;
             const correo = document.getElementById('correo').value;
             const password = document.getElementById('password').value;
@@ -74,10 +98,11 @@ document.addEventListener('DOMContentLoaded', () => {
             errorDiv.style.display = 'none';
 
             try {
+                const role = document.getElementById('adminRole') ? document.getElementById('adminRole').value : 'estudiante';
                 const response = await fetch(`${API_BASE}/registro.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, ocupacion, cedula, correo, password })
+                    body: JSON.stringify({ primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, cedula, correo, password, role })
                 });
 
                 const result = await response.json();
@@ -153,7 +178,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const primer_apellido = document.getElementById('adminPrimerApellido').value;
             const segundo_apellido = document.getElementById('adminSegundoApellido').value;
             const edad = document.getElementById('adminEdad').value;
-            const ocupacion = document.getElementById('adminOcupacion').value;
             const cedula = document.getElementById('adminCedula').value;
             const correo = document.getElementById('adminCorreo').value;
             const password = document.getElementById('adminPassword').value;
@@ -164,10 +188,10 @@ document.addEventListener('DOMContentLoaded', () => {
             errorDiv.style.display = 'none';
 
             try {
-                const response = await fetch(`${API_BASE}/registro.php`, {
+                const response = await fetch(`${API_BASE}/usuarios.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, ocupacion, cedula, correo, password, role })
+                    body: JSON.stringify({ primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, cedula, correo, password, role })
                 });
 
                 const result = await response.json();
@@ -198,7 +222,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const primer_apellido = document.getElementById('editPrimerApellido').value;
             const segundo_apellido = document.getElementById('editSegundoApellido').value;
             const edad = document.getElementById('editEdad').value;
-            const ocupacion = document.getElementById('editOcupacion').value;
             const cedula = document.getElementById('editCedula').value;
             const correo = document.getElementById('editCorreo').value;
             const role = document.getElementById('editRole').value;
@@ -212,7 +235,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`${API_BASE}/usuarios.php`, {
                     method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, ocupacion, cedula, correo, role, status })
+                    body: JSON.stringify({ id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, cedula, correo, role, status })
                 });
 
                 const result = await response.json();
@@ -230,7 +253,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     currentUser.primer_apellido = primer_apellido;
                     currentUser.segundo_apellido = segundo_apellido;
                     currentUser.edad = edad;
-                    currentUser.ocupacion = ocupacion;
                     currentUser.cedula = cedula;
                     currentUser.correo = correo;
                     currentUser.role = role;
@@ -273,32 +295,35 @@ async function renderUsers() {
     try {
         const users = await fetchUsers();
         
-        if (!users || users.length === 0 || users.error) {
-            userTableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">No hay registros.</td></tr>`;
+        if (!users || users.error) {
+            userTableBody.innerHTML = `<tr><td colspan="11" style="text-align: center; padding: 3rem; color: var(--text-muted);">${users && users.error ? users.error : 'No hay registros.'}</td></tr>`;
+            return;
+        }
+
+        if (users.length === 0) {
+            userTableBody.innerHTML = `<tr><td colspan="11" style="text-align: center; padding: 3rem; color: var(--text-muted);">No hay registros.</td></tr>`;
             return;
         }
 
         userTableBody.innerHTML = users.map(user => `
             <tr>
                 <td>
-                    <div style="display: flex; align-items: center; gap: 1rem;">
-                        <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--surface-low); display: flex; align-items: center; justify-content: center; color: var(--primary);">
-                            <span class="material-symbols-outlined">person</span>
-                        </div>
-                        <span style="font-weight: 600;">${user.primer_nombre || ''} ${user.segundo_nombre || ''} ${user.primer_apellido || ''} ${user.segundo_apellido || ''}</span>
-                    </div>
+                    <div class="avatar-initials">${getUserInitials(user)}</div>
                 </td>
+                <td>${user.primer_nombre || ''}</td>
+                <td>${user.segundo_nombre || ''}</td>
+                <td>${user.primer_apellido || ''}</td>
+                <td>${user.segundo_apellido || ''}</td>
                 <td>${user.correo}</td>
                 <td>${user.cedula || ''}</td>
                 <td>${user.edad || ''}</td>
-                <td>${user.ocupacion || ''}</td>
                 <td>${user.role || ''}</td>
                 <td><span class="badge ${user.status === 'Activo' ? 'badge-success' : 'badge-warning'}">${user.status || 'Inactivo'}</span></td>
                 <td>
                     <div style="display: flex; gap: 0.5rem;">
-                        <button class="btn btn-outline" style="padding: 0.5rem;" onclick="openEditModal('${user.id}', '${user.primer_nombre || ''}', '${user.segundo_nombre || ''}', '${user.primer_apellido || ''}', '${user.segundo_apellido || ''}', '${user.edad || ''}', '${user.ocupacion || ''}', '${user.cedula || ''}', '${user.correo || ''}', '${user.role || 'estudiante'}', '${user.status || 'Inactivo'}')">
+                        <a href="editar-usuario.html?id=${user.id}" class="btn btn-outline" style="padding: 0.5rem; display: inline-flex; align-items: center; justify-content: center;">
                             <span class="material-symbols-outlined" style="font-size: 1.25rem;">edit</span>
-                        </button>
+                        </a>
                         <button class="btn btn-outline" style="padding: 0.5rem;" onclick="deleteUser('${user.id}')">
                             <span class="material-symbols-outlined" style="font-size: 1.25rem; color: var(--accent);">delete</span>
                         </button>
@@ -311,14 +336,13 @@ async function renderUsers() {
     }
 }
 
-function openEditModal(id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, ocupacion, cedula, correo, role, status) {
+function openEditModal(id, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, cedula, correo, role, status) {
     document.getElementById('editUserId').value = id;
     document.getElementById('editPrimerNombre').value = primer_nombre;
     document.getElementById('editSegundoNombre').value = segundo_nombre;
     document.getElementById('editPrimerApellido').value = primer_apellido;
     document.getElementById('editSegundoApellido').value = segundo_apellido;
     document.getElementById('editEdad').value = edad;
-    document.getElementById('editOcupacion').value = ocupacion;
     document.getElementById('editCedula').value = cedula;
     document.getElementById('editCorreo').value = correo;
     document.getElementById('editRole').value = role;
@@ -332,6 +356,39 @@ function closeModal() {
 
 function closeCreateModal() {
     document.getElementById('createModal').classList.remove('active');
+}
+
+async function fetchUserById(id) {
+    try {
+        const response = await fetch(`${API_BASE}/usuarios.php?id=${id}`);
+        const user = await response.json();
+        return user;
+    } catch (error) {
+        console.error('Error cargando usuario:', error);
+        return null;
+    }
+}
+
+async function loadUserForEdit(id) {
+    const user = await fetchUserById(id);
+    if (!user || user.error) {
+        const editFormContainer = document.querySelector('#editForm');
+        if (editFormContainer) {
+            editFormContainer.innerHTML = `<div class="alert-error" style="display: flex;">Usuario no encontrado o no disponible.</div>`;
+        }
+        return;
+    }
+
+    document.getElementById('editUserId').value = user.id;
+    document.getElementById('editPrimerNombre').value = user.primer_nombre || '';
+    document.getElementById('editSegundoNombre').value = user.segundo_nombre || '';
+    document.getElementById('editPrimerApellido').value = user.primer_apellido || '';
+    document.getElementById('editSegundoApellido').value = user.segundo_apellido || '';
+    document.getElementById('editEdad').value = user.edad || '';
+    document.getElementById('editCedula').value = user.cedula || '';
+    document.getElementById('editCorreo').value = user.correo || '';
+    document.getElementById('editRole').value = user.role || 'estudiante';
+    document.getElementById('editStatus').value = user.status || 'Activo';
 }
 
 async function deleteUser(id) {

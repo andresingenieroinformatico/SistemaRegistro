@@ -252,17 +252,33 @@ main {
     color: var(--text-main);
 }
 
-.form-group input {
+.form-group input,
+.form-group select {
     width: 100%;
     padding: 0.75rem 1rem;
     border: 1px solid var(--border);
     border-radius: var(--radius-md);
-    background: var(--bg-base);
+    background-color: var(--bg-base);
     font-size: 1rem;
+    color: var(--text-main);
     transition: all 0.2s;
 }
 
-.form-group input:focus {
+.form-group select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: var(--bg-base);
+    background-image: linear-gradient(45deg, transparent 50%, var(--text-main) 50%), linear-gradient(135deg, var(--text-main) 50%, transparent 50%);
+    background-position: calc(100% - 1rem) calc(50% - 0.15rem), calc(100% - 0.75rem) calc(50% - 0.15rem);
+    background-size: 0.45rem 0.45rem, 0.45rem 0.45rem;
+    background-repeat: no-repeat;
+    padding-right: 2.5rem;
+    cursor: pointer;
+}
+
+.form-group input:focus,
+.form-group select:focus {
     outline: none;
     border-color: var(--primary);
     box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
@@ -336,32 +352,52 @@ main {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    overflow: hidden;
+    overflow-x: auto;
     box-shadow: var(--shadow-sm);
 }
 
 table {
     width: 100%;
+    min-width: 980px;
     border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 0.9rem 1rem;
+    border-top: 1px solid var(--border);
+    text-align: left;
+    white-space: nowrap;
 }
 
 th {
     background: var(--surface-low);
-    text-align: left;
-    padding: 0.75rem 1.5rem;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--text-muted);
 }
 
-td {
-    padding: 1.25rem 1.5rem;
-    border-top: 1px solid var(--border);
+tr:hover td {
+    background: #fafafa;
 }
 
 tr:hover td {
     background: #fafafa;
+}
+
+.avatar-initials {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--surface-low);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
 }
 
 .badge {
@@ -460,15 +496,34 @@ tr:hover td {
 
 .modal-content {
     background: white;
-    width: 90%;
+    width: min(100%, 460px);
     max-width: 460px;
-    padding: 3rem;
+    max-height: 95vh;
+    padding: 2.5rem;
     border-radius: 1.5rem;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
     border: 1px solid var(--border);
     position: relative;
     transform: translateY(0);
     animation: slideUpModal 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+}
+
+@media (max-width: 560px) {
+    .modal-content {
+        width: 92%;
+        padding: 1.5rem;
+        max-width: 100%;
+        border-radius: 1rem;
+    }
+
+    .modal-header h3 {
+        font-size: 1.5rem;
+    }
+
+    .modal-footer {
+        grid-template-columns: 1fr;
+    }
 }
 
 @keyframes slideUpModal {
