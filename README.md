@@ -31,6 +31,62 @@ erDiagram
     }
 ```
 
+### Diagrama de Clases (Estructura Lógica)
+Aunque la implementación actual usa PHP procedural para los endpoints, el siguiente diagrama muestra la estructura lógica y los componentes principales del sistema.
+
+```mermaid
+classDiagram
+    class Config {
+        - host: string
+        - db: string
+        - user: string
+        - pass: string
+        - charset: string
+        + connect(): PDO
+    }
+
+    class Usuario {
+        - id: int
+        - nombre: string
+        - correo: string
+        - password: string
+        - fecha: timestamp
+        - status: string
+        - role: string
+    }
+
+    class RegistroAPI {
+        + registerUser(data)
+    }
+
+    class LoginAPI {
+        + authenticate(data)
+    }
+
+    class UsuariosAPI {
+        + getUsers(filter)
+        + updateUser(data)
+        + deleteUser(id)
+    }
+
+    class FrontendJS {
+        + handleLogin()
+        + handleRegister()
+        + renderUsers()
+        + handleLogout()
+    }
+
+    Config <|-- RegistroAPI
+    Config <|-- LoginAPI
+    Config <|-- UsuariosAPI
+    Usuario <|-- RegistroAPI
+    Usuario <|-- LoginAPI
+    Usuario <|-- UsuariosAPI
+    FrontendJS --> LoginAPI : fetch
+    FrontendJS --> RegistroAPI : fetch
+    FrontendJS --> UsuariosAPI : fetch
+```
+
 ### Diagrama UML de Secuencia (Flujo de Autenticación)
 Representación del proceso de interacción entre el cliente y el servidor durante el inicio de sesión.
 
