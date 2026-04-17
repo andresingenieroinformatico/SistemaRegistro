@@ -31,12 +31,38 @@ document.addEventListener('DOMContentLoaded', () => {
             const nombre = document.getElementById('nombre').value;
             const correo = document.getElementById('correo').value;
             const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('registroError');
+            const errorMsg = document.getElementById('registroErrorMessage');
+
+            errorDiv.style.display = 'none';
 
             const users = getUsers();
 
+<<<<<<< Updated upstream
             // Check if user already exists
             if (users.find(u => u.correo === correo)) {
                 return showMessage('Este correo ya está registrado.', true);
+=======
+                const result = await response.json();
+
+                if (result.error) {
+                    errorMsg.textContent = result.error;
+                    errorDiv.style.display = 'flex';
+                    return;
+                }
+
+                // Visual transition before automatic redirect
+                const card = registroForm.closest('.card');
+                if (card) card.classList.add('animate-save');
+                
+                setTimeout(() => {
+                    const currentPath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+                    window.location.href = currentPath + 'login.html';
+                }, 600);
+            } catch (error) {
+                errorMsg.textContent = 'Error al conectar con el servidor.';
+                errorDiv.style.display = 'flex';
+>>>>>>> Stashed changes
             }
 
             const newUser = {
@@ -64,20 +90,88 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const correo = document.getElementById('correo').value;
             const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('loginError');
+            const errorMsg = document.getElementById('errorMessage');
+
+            // Hide previous errors
+            errorDiv.style.display = 'none';
 
             const users = getUsers();
             const user = users.find(u => u.correo === correo && u.password === password);
 
+<<<<<<< Updated upstream
             if (user) {
                 localStorage.setItem('currentUser', JSON.stringify(user));
                 window.location.href = 'lista.html';
             } else {
                 showMessage('Credenciales inválidas. Intenta de nuevo.', true);
+=======
+                const result = await response.json();
+
+                if (result.user) {
+                    localStorage.setItem('currentUser', JSON.stringify(result.user));
+                    window.location.href = 'lista.html';
+                } else {
+                    errorMsg.textContent = result.error || 'Credenciales inválidas.';
+                    errorDiv.style.display = 'flex';
+                }
+            } catch (error) {
+                errorMsg.textContent = 'Error al conectar con el servidor.';
+                errorDiv.style.display = 'flex';
+>>>>>>> Stashed changes
             }
         });
     }
 
+<<<<<<< Updated upstream
     // --- List Display Logic ---
+=======
+    // --- Edit Logic ---
+    if (editForm) {
+        editForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('editUserId').value;
+            const nuevoNombre = document.getElementById('editNombre').value;
+            const nuevoCorreo = document.getElementById('editCorreo').value;
+            const errorDiv = document.getElementById('editError');
+            const errorMsg = document.getElementById('editErrorMessage');
+
+            errorDiv.style.display = 'none';
+
+            try {
+                const response = await fetch(`${API_BASE}/usuarios.php`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id, nombre: nuevoNombre, correo: nuevoCorreo })
+                });
+
+                const result = await response.json();
+
+                if (result.error) {
+                    errorMsg.textContent = result.error;
+                    errorDiv.style.display = 'flex';
+                    return;
+                }
+
+                // Update current user in local storage if they edited themselves
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                if (currentUser && currentUser.id == id) {
+                    currentUser.nombre = nuevoNombre;
+                    currentUser.correo = nuevoCorreo;
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                }
+
+                closeModal();
+                renderUsers();
+            } catch (error) {
+                errorMsg.textContent = 'Error al actualizar el usuario.';
+                errorDiv.style.display = 'flex';
+            }
+        });
+    }
+
+    // --- Rendering Logic ---
+>>>>>>> Stashed changes
 
     if (userTableBody) {
         const users = getUsers();
