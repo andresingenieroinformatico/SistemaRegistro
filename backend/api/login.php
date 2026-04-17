@@ -11,8 +11,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $correo = $data['correo'];
-    $password = $data['password'];
+    $correo = filter_var(trim($data['correo']), FILTER_VALIDATE_EMAIL);
+    $password = trim($data['password']);
+
+    if (!$correo) {
+        echo json_encode(['error' => 'El correo no es un email válido.']);
+        exit;
+    }
+
+    if (strlen($password) < 6) {
+        echo json_encode(['error' => 'La contraseña debe tener al menos 6 caracteres.']);
+        exit;
+    }
 
     try {
         $stmt = $pdo->prepare("SELECT * FROM usuarios WHERE correo = ?");
