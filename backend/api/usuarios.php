@@ -7,9 +7,14 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
     case 'GET':
-        // List all users
+        // List all users or filter by status
         try {
-            $stmt = $pdo->query("SELECT id, nombre, correo, fecha, status FROM usuarios ORDER BY id DESC");
+            if (!empty($_GET['status'])) {
+                $stmt = $pdo->prepare("SELECT id, nombre, correo, fecha, status FROM usuarios WHERE status = ? ORDER BY id DESC");
+                $stmt->execute([trim($_GET['status'])]);
+            } else {
+                $stmt = $pdo->query("SELECT id, nombre, correo, fecha, status FROM usuarios ORDER BY id DESC");
+            }
             $users = $stmt->fetchAll();
             echo json_encode($users);
         } catch (\Exception $e) {
@@ -34,8 +39,13 @@ switch ($method) {
                 exit;
             }
 
-            $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, correo = ? WHERE id = ?");
-            $stmt->execute([$data['nombre'], $data['correo'], $data['id']]);
+            if (!empty($data['status'])) {
+                $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, correo = ?, status = ? WHERE id = ?");
+                $stmt->execute([$data['nombre'], $data['correo'], trim($data['status']), $data['id']]);
+            } else {
+                $stmt = $pdo->prepare("UPDATE usuarios SET nombre = ?, correo = ? WHERE id = ?");
+                $stmt->execute([$data['nombre'], $data['correo'], $data['id']]);
+            }
             echo json_encode(['message' => 'Usuario actualizado con éxito.']);
         } catch (\Exception $e) {
             echo json_encode(['error' => 'Error al actualizar: ' . $e->getMessage()]);
