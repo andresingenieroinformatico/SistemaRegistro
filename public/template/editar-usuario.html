@@ -41,49 +41,55 @@
                     <span class="material-symbols-outlined" style="font-size: 1.25rem;">error</span>
                     <span id="editErrorMessage"></span>
                 </div>
-                <div class="form-group">
-                    <label for="editPrimerNombre">Primer Nombre</label>
-                    <input type="text" id="editPrimerNombre" required>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="editPrimerNombre">Primer Nombre</label>
+                        <input type="text" id="editPrimerNombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editSegundoNombre">Segundo Nombre (opcional)</label>
+                        <input type="text" id="editSegundoNombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPrimerApellido">Primer Apellido</label>
+                        <input type="text" id="editPrimerApellido" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editSegundoApellido">Segundo Apellido (opcional)</label>
+                        <input type="text" id="editSegundoApellido">
+                    </div>
+                    <div class="form-group">
+                        <label for="editEdad">Edad</label>
+                        <input type="number" id="editEdad" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCedula">Cédula</label>
+                        <input type="text" id="editCedula" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCorreo">Correo</label>
+                        <input type="email" id="editCorreo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editRole">Rol</label>
+                        <select id="editRole" required>
+                            <option value="estudiante">Estudiante</option>
+                            <option value="docente">Docente</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label for="editStatus">Estado de la Cuenta</label>
+                        <select id="editStatus" required>
+                            <option value="Activo">Activo (Habilitado para el sistema)</option>
+                            <option value="Pendiente">Pendiente (Requiere revisión)</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label for="editSegundoNombre">Segundo Nombre (opcional)</label>
-                    <input type="text" id="editSegundoNombre">
-                </div>
-                <div class="form-group">
-                    <label for="editPrimerApellido">Primer Apellido</label>
-                    <input type="text" id="editPrimerApellido" required>
-                </div>
-                <div class="form-group">
-                    <label for="editSegundoApellido">Segundo Apellido (opcional)</label>
-                    <input type="text" id="editSegundoApellido">
-                </div>
-                <div class="form-group">
-                    <label for="editEdad">Edad</label>
-                    <input type="number" id="editEdad" min="1" required>
-                </div>
-                <div class="form-group">
-                    <label for="editCedula">Cédula</label>
-                    <input type="text" id="editCedula" required>
-                </div>
-                <div class="form-group">
-                    <label for="editCorreo">Correo</label>
-                    <input type="email" id="editCorreo" required>
-                </div>
-                <div class="form-group">
-                    <label for="editRole">Rol</label>
-                    <select id="editRole" required>
-                        <option value="estudiante">Estudiante</option>
-                        <option value="docente">Docente</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="editStatus">Estado</label>
-                    <select id="editStatus" required>
-                        <option value="Activo">Activo</option>
-                        <option value="Pendiente">Pendiente</option>
-                    </select>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Guardar Cambios</button>
+                
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 2rem; padding: 1rem;">
+                    Actualizar Información del Usuario
+                </button>
             </form>
         </div>
     </main>

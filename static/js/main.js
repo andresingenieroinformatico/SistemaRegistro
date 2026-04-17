@@ -240,8 +240,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 const result = await response.json();
 
-                if (result.error) {
-                    errorMsg.textContent = result.error;
+                if (!response.ok || result.error) {
+                    errorMsg.textContent = result.error || 'No se pudo actualizar el usuario.';
                     errorDiv.style.display = 'flex';
                     return;
                 }
@@ -260,8 +260,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('currentUser', JSON.stringify(currentUser));
                 }
 
-                closeModal();
-                renderUsers();
+                window.location.href = 'lista.html';
             } catch (error) {
                 errorMsg.textContent = 'Error al actualizar el usuario.';
                 errorDiv.style.display = 'flex';
@@ -306,7 +305,7 @@ async function renderUsers() {
         }
 
         userTableBody.innerHTML = users.map(user => `
-            <tr>
+            <tr class="table-row" onclick="window.location.href='editar-usuario.html?id=${user.id}'">
                 <td>
                     <div class="avatar-initials">${getUserInitials(user)}</div>
                 </td>
@@ -320,11 +319,11 @@ async function renderUsers() {
                 <td>${user.role || ''}</td>
                 <td><span class="badge ${user.status === 'Activo' ? 'badge-success' : 'badge-warning'}">${user.status || 'Inactivo'}</span></td>
                 <td>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <a href="editar-usuario.html?id=${user.id}" class="btn btn-outline" style="padding: 0.5rem; display: inline-flex; align-items: center; justify-content: center;">
+                    <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+                        <a href="editar-usuario.html?id=${user.id}" onclick="event.stopPropagation()" class="btn btn-outline" style="padding: 0.5rem; display: inline-flex; align-items: center; justify-content: center;">
                             <span class="material-symbols-outlined" style="font-size: 1.25rem;">edit</span>
                         </a>
-                        <button class="btn btn-outline" style="padding: 0.5rem;" onclick="deleteUser('${user.id}')">
+                        <button class="btn btn-outline" style="padding: 0.5rem;" onclick="event.stopPropagation(); deleteUser('${user.id}')">
                             <span class="material-symbols-outlined" style="font-size: 1.25rem; color: var(--accent);">delete</span>
                         </button>
                     </div>

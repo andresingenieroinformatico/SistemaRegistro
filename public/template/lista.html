@@ -81,9 +81,8 @@
         </div>
     </footer>
 
-    <!-- Create User Modal -->
     <div class="modal" id="createModal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 650px;">
             <div class="modal-header">
                 <h3>Crear <span class="text-gradient">Nuevo Usuario</span></h3>
             </div>
@@ -92,44 +91,47 @@
                     <span class="material-symbols-outlined" style="font-size: 1.25rem;">error</span>
                     <span id="createErrorMessage"></span>
                 </div>
-                <div class="form-group">
-                    <label for="adminPrimerNombre">Primer Nombre</label>
-                    <input type="text" id="adminPrimerNombre" required>
-                </div>
-                <div class="form-group">
-                    <label for="adminSegundoNombre">Segundo Nombre (opcional)</label>
-                    <input type="text" id="adminSegundoNombre">
-                </div>
-                <div class="form-group">
-                    <label for="adminPrimerApellido">Primer Apellido</label>
-                    <input type="text" id="adminPrimerApellido" required>
-                </div>
-                <div class="form-group">
-                    <label for="adminSegundoApellido">Segundo Apellido (opcional)</label>
-                    <input type="text" id="adminSegundoApellido">
-                </div>
-                <div class="form-group">
-                    <label for="adminEdad">Edad</label>
-                    <input type="number" id="adminEdad" min="1" required>
-                </div>
-                <div class="form-group">
-                    <label for="adminCedula">Cédula</label>
-                    <input type="text" id="adminCedula" required>
-                </div>
-                <div class="form-group">
-                    <label for="adminCorreo">Correo Electrónico</label>
-                    <input type="email" id="adminCorreo" required>
-                </div>
-                <div class="form-group">
-                    <label for="adminRole">Rol</label>
-                    <select id="adminRole" required>
-                        <option value="estudiante">Estudiante</option>
-                        <option value="docente">Docente</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="adminPassword">Contraseña</label>
-                    <input type="password" id="adminPassword" required>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="adminPrimerNombre">Primer Nombre</label>
+                        <input type="text" id="adminPrimerNombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminSegundoNombre">Segundo Nombre (opcional)</label>
+                        <input type="text" id="adminSegundoNombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="adminPrimerApellido">Primer Apellido</label>
+                        <input type="text" id="adminPrimerApellido" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminSegundoApellido">Segundo Apellido (opcional)</label>
+                        <input type="text" id="adminSegundoApellido">
+                    </div>
+                    <div class="form-group">
+                        <label for="adminEdad">Edad</label>
+                        <input type="number" id="adminEdad" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminCedula">Cédula</label>
+                        <input type="text" id="adminCedula" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminCorreo">Correo Electrónico</label>
+                        <input type="email" id="adminCorreo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminRole">Rol</label>
+                        <select id="adminRole" required>
+                            <option value="estudiante">Estudiante</option>
+                            <option value="docente">Docente</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label for="adminPassword">Contraseña Inicial</label>
+                        <input type="password" id="adminPassword" required>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeCreateModal()">Cancelar</button>
@@ -139,9 +141,8 @@
         </div>
     </div>
 
-    <!-- Edit Modal -->
     <div class="modal" id="editModal">
-        <div class="modal-content">
+        <div class="modal-content" style="max-width: 650px;">
             <div class="modal-header">
                 <h3>Editar <span class="text-gradient">Usuario</span></h3>
             </div>
@@ -151,47 +152,50 @@
                     <span class="material-symbols-outlined" style="font-size: 1.25rem;">error</span>
                     <span id="editErrorMessage"></span>
                 </div>
-                <div class="form-group">
-                    <label for="editPrimerNombre">Primer Nombre</label>
-                    <input type="text" id="editPrimerNombre" required>
-                </div>
-                <div class="form-group">
-                    <label for="editSegundoNombre">Segundo Nombre (opcional)</label>
-                    <input type="text" id="editSegundoNombre">
-                </div>
-                <div class="form-group">
-                    <label for="editPrimerApellido">Primer Apellido</label>
-                    <input type="text" id="editPrimerApellido" required>
-                </div>
-                <div class="form-group">
-                    <label for="editSegundoApellido">Segundo Apellido (opcional)</label>
-                    <input type="text" id="editSegundoApellido">
-                </div>
-                <div class="form-group">
-                    <label for="editEdad">Edad</label>
-                    <input type="number" id="editEdad" min="1" required>
-                </div>
-                <div class="form-group">
-                    <label for="editCedula">Cédula</label>
-                    <input type="text" id="editCedula" required>
-                </div>
-                <div class="form-group">
-                    <label for="editCorreo">Correo</label>
-                    <input type="email" id="editCorreo" required>
-                </div>
-                <div class="form-group">
-                    <label for="editRole">Rol</label>
-                    <select id="editRole" required>
-                        <option value="estudiante">Estudiante</option>
-                        <option value="docente">Docente</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="editStatus">Estado</label>
-                    <select id="editStatus" required>
-                        <option value="Activo">Activo</option>
-                        <option value="Pendiente">Pendiente</option>
-                    </select>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="editPrimerNombre">Primer Nombre</label>
+                        <input type="text" id="editPrimerNombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editSegundoNombre">Segundo Nombre</label>
+                        <input type="text" id="editSegundoNombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="editPrimerApellido">Primer Apellido</label>
+                        <input type="text" id="editPrimerApellido" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editSegundoApellido">Segundo Apellido</label>
+                        <input type="text" id="editSegundoApellido">
+                    </div>
+                    <div class="form-group">
+                        <label for="editEdad">Edad</label>
+                        <input type="number" id="editEdad" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCedula">Cédula</label>
+                        <input type="text" id="editCedula" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editCorreo">Correo</label>
+                        <input type="email" id="editCorreo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editRole">Rol</label>
+                        <select id="editRole" required>
+                            <option value="estudiante">Estudiante</option>
+                            <option value="docente">Docente</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="grid-column: span 2;">
+                        <label for="editStatus">Estado</label>
+                        <select id="editStatus" required>
+                            <option value="Activo">Activo</option>
+                            <option value="Pendiente">Pendiente</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-outline" style="flex: 1;" onclick="closeModal()">Cancelar</button>
