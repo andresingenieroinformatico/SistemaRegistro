@@ -11,9 +11,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $nombre = $data['nombre'];
-    $correo = $data['correo'];
-    $password = password_hash($data['password'], PASSWORD_BCRYPT);
+    $nombre = trim($data['nombre']);
+    $correo = filter_var(trim($data['correo']), FILTER_VALIDATE_EMAIL);
+    $rawPassword = trim($data['password']);
+
+    if (!$correo) {
+        echo json_encode(['error' => 'El correo no es un email válido.']);
+        exit;
+    }
+
+    if (strlen($rawPassword) < 8) {
+        echo json_encode(['error' => 'La contraseña debe tener al menos 8 caracteres.']);
+        exit;
+    }
+
+    $password = password_hash($rawPassword, PASSWORD_BCRYPT);
+    $status = 'Activo';
 
     try {
         // Check if email exists
@@ -25,8 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Insert new user
-        $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, correo, password) VALUES (?, ?, ?)");
-        $stmt->execute([$nombre, $correo, $password]);
+        $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, correo, password, status) VALUES (?, ?, ?, ?)");
+        $stmt->execute([$nombre, $correo, $password, $status]);
 
         echo json_encode(['message' => 'Usuario registrado con éxito.']);
     } catch (\Exception $e) {

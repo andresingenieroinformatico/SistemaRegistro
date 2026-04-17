@@ -1,0 +1,59 @@
+# PHP / general
+/vendor/
+/node_modules/
+/.idea/
+/.vscode/
+/.DS_Store
+Thumbs.db
+*.log
+*.cache
+*.tmp
+*.env
+.env.local
+.env.*.local
+/public/hot
+/public/storage
+/storage/*.key
+/vendor
+/composer.lock
+
+# Environment and OS
+*.log
+*.sql
+*.sqlite
+*.sqlite3
+*.db
+*.bak
+*.swp
+*.swo
+*.tmp
+
+# Composer
+composer.phar
+
+# Editor and OS files
+*~
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+*.idea/
+.vscode/
+
+# PHPStorm
+.phpstorm.meta.php
+
+# npm
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# Build directories
+/dist/
+/public/dist/
+
+# Credentials
+config.php
+backend/config.php
