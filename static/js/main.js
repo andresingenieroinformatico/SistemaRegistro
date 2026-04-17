@@ -1,32 +1,47 @@
 /** 
- * Nocturne Registry - Logic System 
- * Simulated User Authentication & Data Persistence
+ * Sistema de Registro - Logic System 
+ * PHP Backend Integration & Data Persistence
  */
+
+const API_BASE = '../../backend/api';
 
 document.addEventListener('DOMContentLoaded', () => {
     const registroForm = document.getElementById('registroForm');
     const loginForm = document.getElementById('loginForm');
+    const editForm = document.getElementById('editForm');
     const userTableBody = document.getElementById('userTableBody');
+    const logoutBtn = document.getElementById('logoutBtn');
 
     // --- Helper Functions ---
 
-    const getUsers = () => {
-        const users = localStorage.getItem('users');
-        return users ? JSON.parse(users) : [];
+    const fetchUsers = async () => {
+        try {
+            const response = await fetch(`${API_BASE}/usuarios.php`);
+            return await response.json();
+        } catch (error) {
+            console.error('Error fetching users:', error);
+            return [];
+        }
     };
 
-    const saveUsers = (users) => {
-        localStorage.setItem('users', JSON.stringify(users));
-    };
+    // --- Protection Middleware ---
+    if (userTableBody && !localStorage.getItem('currentUser')) {
+        window.location.href = 'login.html';
+    }
 
-    const showMessage = (msg, isError = false) => {
-        alert(msg); // Simplified for this demo, can be improved to a toast
-    };
+    // --- Logout Logic ---
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        });
+    }
 
     // --- Registration Logic ---
 
     if (registroForm) {
-        registroForm.addEventListener('submit', (e) => {
+        registroForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const nombre = document.getElementById('nombre').value;
             const correo = document.getElementById('correo').value;
@@ -36,13 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             errorDiv.style.display = 'none';
 
-            const users = getUsers();
+            try {
+                const response = await fetch(`${API_BASE}/registro.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ nombre, correo, password })
+                });
 
-<<<<<<< Updated upstream
-            // Check if user already exists
-            if (users.find(u => u.correo === correo)) {
-                return showMessage('Este correo ya está registrado.', true);
-=======
                 const result = await response.json();
 
                 if (result.error) {
@@ -62,31 +77,14 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 errorMsg.textContent = 'Error al conectar con el servidor.';
                 errorDiv.style.display = 'flex';
->>>>>>> Stashed changes
             }
-
-            const newUser = {
-                nombre,
-                correo,
-                password, // Note: In a real app, passwords should NEVER be saved in plain text
-                fecha: new Date().toLocaleDateString(),
-                status: 'Activo'
-            };
-
-            users.push(newUser);
-            saveUsers(users);
-
-            showMessage('¡Registro exitoso! Iniciando sesión...');
-            // Optional: Auto-login after registration
-            localStorage.setItem('currentUser', JSON.stringify(newUser));
-            window.location.href = 'lista.html';
         });
     }
 
     // --- Login Logic ---
 
     if (loginForm) {
-        loginForm.addEventListener('submit', (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             const correo = document.getElementById('correo').value;
             const password = document.getElementById('password').value;
@@ -96,16 +94,13 @@ document.addEventListener('DOMContentLoaded', () => {
             // Hide previous errors
             errorDiv.style.display = 'none';
 
-            const users = getUsers();
-            const user = users.find(u => u.correo === correo && u.password === password);
+            try {
+                const response = await fetch(`${API_BASE}/login.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ correo, password })
+                });
 
-<<<<<<< Updated upstream
-            if (user) {
-                localStorage.setItem('currentUser', JSON.stringify(user));
-                window.location.href = 'lista.html';
-            } else {
-                showMessage('Credenciales inválidas. Intenta de nuevo.', true);
-=======
                 const result = await response.json();
 
                 if (result.user) {
@@ -118,14 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
             } catch (error) {
                 errorMsg.textContent = 'Error al conectar con el servidor.';
                 errorDiv.style.display = 'flex';
->>>>>>> Stashed changes
             }
         });
     }
 
-<<<<<<< Updated upstream
-    // --- List Display Logic ---
-=======
     // --- Edit Logic ---
     if (editForm) {
         editForm.addEventListener('submit', async (e) => {
@@ -171,47 +162,80 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Rendering Logic ---
->>>>>>> Stashed changes
 
     if (userTableBody) {
-        const users = getUsers();
-        
-        if (users.length === 0) {
-            userTableBody.innerHTML = `
-                <tr>
-                    <td colspan="4" style="text-align: center; padding: 3rem; color: var(--on-surface-variant);">
-                        No hay identidades registradas en el archivo.
-                    </td>
-                </tr>
-            `;
-        } else {
-            userTableBody.innerHTML = users.map(user => `
-                <tr>
-                    <td>
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--surface-highest); display: flex; align-items: center; justify-content: center; border: 2px solid ${user.status === 'Activo' ? 'var(--primary)' : 'var(--secondary)'};">
-                                <span class="material-symbols-outlined" style="font-size: 1.25rem;">person</span>
-                            </div>
-                            <span style="font-weight: 600;">${user.nombre}</span>
-                        </div>
-                    </td>
-                    <td>${user.correo}</td>
-                    <td><span class="status-badge ${user.status === 'Activo' ? '' : 'pending'}">${user.status}</span></td>
-                    <td>
-                        <span class="material-symbols-outlined" style="cursor: pointer; color: var(--on-surface-variant);" onclick="deleteUser('${user.correo}')">delete</span>
-                    </td>
-                </tr>
-            `).join('');
-        }
+        renderUsers();
     }
 });
 
-// Global function for deletion (simulated)
-function deleteUser(email) {
-    if (confirm('¿Estás seguro de que deseas eliminar esta identidad del archivo?')) {
-        let users = JSON.parse(localStorage.getItem('users') || '[]');
-        users = users.filter(u => u.correo !== email);
-        localStorage.setItem('users', JSON.stringify(users));
-        location.reload();
+async function renderUsers() {
+    const userTableBody = document.getElementById('userTableBody');
+    if (!userTableBody) return;
+
+    try {
+        const response = await fetch('../../backend/api/usuarios.php');
+        const users = await response.json();
+        
+        if (!users || users.length === 0 || users.error) {
+            userTableBody.innerHTML = `<tr><td colspan="4" style="text-align: center; padding: 3rem; color: var(--text-muted);">No hay registros.</td></tr>`;
+            return;
+        }
+
+        userTableBody.innerHTML = users.map(user => `
+            <tr>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--surface-low); display: flex; align-items: center; justify-content: center; color: var(--primary);">
+                            <span class="material-symbols-outlined">person</span>
+                        </div>
+                        <span style="font-weight: 600;">${user.nombre}</span>
+                    </div>
+                </td>
+                <td>${user.correo}</td>
+                <td><span class="badge ${user.status === 'Activo' ? 'badge-success' : 'badge-warning'}">${user.status}</span></td>
+                <td>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <button class="btn btn-outline" style="padding: 0.5rem;" onclick="openEditModal('${user.id}', '${user.nombre}', '${user.correo}')">
+                            <span class="material-symbols-outlined" style="font-size: 1.25rem;">edit</span>
+                        </button>
+                        <button class="btn btn-outline" style="padding: 0.5rem;" onclick="deleteUser('${user.id}')">
+                            <span class="material-symbols-outlined" style="font-size: 1.25rem; color: var(--accent);">delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    } catch (error) {
+        console.error('Error rendering users:', error);
+    }
+}
+
+function openEditModal(id, nombre, correo) {
+    document.getElementById('editUserId').value = id;
+    document.getElementById('editNombre').value = nombre;
+    document.getElementById('editCorreo').value = correo;
+    document.getElementById('editModal').classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('editModal').classList.remove('active');
+}
+
+async function deleteUser(id) {
+    if (confirm('¿Estás seguro de eliminar esta identidad?')) {
+        try {
+            const response = await fetch(`../../backend/api/usuarios.php?id=${id}`, {
+                method: 'DELETE'
+            });
+            const result = await response.json();
+            
+            if (result.message) {
+                renderUsers();
+            } else {
+                alert(result.error);
+            }
+        } catch (error) {
+            alert('Error al eliminar el usuario.');
+        }
     }
 }
