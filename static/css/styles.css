@@ -352,32 +352,52 @@ main {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-lg);
-    overflow: hidden;
+    overflow-x: auto;
     box-shadow: var(--shadow-sm);
 }
 
 table {
     width: 100%;
+    min-width: 980px;
     border-collapse: collapse;
+}
+
+th,
+td {
+    padding: 0.9rem 1rem;
+    border-top: 1px solid var(--border);
+    text-align: left;
+    white-space: nowrap;
 }
 
 th {
     background: var(--surface-low);
-    text-align: left;
-    padding: 0.75rem 1.5rem;
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--text-muted);
 }
 
-td {
-    padding: 1.25rem 1.5rem;
-    border-top: 1px solid var(--border);
+tr:hover td {
+    background: #fafafa;
 }
 
 tr:hover td {
     background: #fafafa;
+}
+
+.avatar-initials {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--surface-low);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
 }
 
 .badge {

@@ -5,6 +5,27 @@
 
 const API_BASE = '../../backend/api';
 
+const fetchUsers = async () => {
+    try {
+        const response = await fetch(`${API_BASE}/usuarios.php`);
+        const users = await response.json();
+        if (users.error) {
+            console.error('Error fetching users:', users.error);
+            return { error: users.error };
+        }
+        return Array.isArray(users) ? users : [];
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        return { error: 'No se pudo conectar al servidor de usuarios.' };
+    }
+};
+
+const getUserInitials = (user) => {
+    const first = user.primer_nombre ? user.primer_nombre.trim().charAt(0).toUpperCase() : '';
+    const last = user.primer_apellido ? user.primer_apellido.trim().charAt(0).toUpperCase() : '';
+    return `${first}${last}` || 'U';
+};
+
 document.addEventListener('DOMContentLoaded', () => {
     const registroForm = document.getElementById('registroForm');
     const loginForm = document.getElementById('loginForm');
@@ -16,16 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const logoutBtnMobile = document.getElementById('logoutBtnMobile');
 
     // --- Helper Functions ---
-
-    const fetchUsers = async () => {
-        try {
-            const response = await fetch(`${API_BASE}/usuarios.php`);
-            return await response.json();
-        } catch (error) {
-            console.error('Error fetching users:', error);
-            return [];
-        }
-    };
 
     const getUrlParam = (name) => new URLSearchParams(window.location.search).get(name);
     const editUserIdFromQuery = getUrlParam('id');
@@ -91,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const response = await fetch(`${API_BASE}/registro.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, ocupacion, cedula, correo, password, role })
+                    body: JSON.stringify({ primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, cedula, correo, password, role })
                 });
 
                 const result = await response.json();
@@ -177,10 +188,10 @@ document.addEventListener('DOMContentLoaded', () => {
             errorDiv.style.display = 'none';
 
             try {
-                const response = await fetch(`${API_BASE}/registro.php`, {
+                const response = await fetch(`${API_BASE}/usuarios.php`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, ocupacion, cedula, correo, password, role })
+                    body: JSON.stringify({ primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, edad, cedula, correo, password, role })
                 });
 
                 const result = await response.json();
@@ -284,21 +295,25 @@ async function renderUsers() {
     try {
         const users = await fetchUsers();
         
-        if (!users || users.length === 0 || users.error) {
-            userTableBody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 3rem; color: var(--text-muted);">No hay registros.</td></tr>`;
+        if (!users || users.error) {
+            userTableBody.innerHTML = `<tr><td colspan="11" style="text-align: center; padding: 3rem; color: var(--text-muted);">${users && users.error ? users.error : 'No hay registros.'}</td></tr>`;
+            return;
+        }
+
+        if (users.length === 0) {
+            userTableBody.innerHTML = `<tr><td colspan="11" style="text-align: center; padding: 3rem; color: var(--text-muted);">No hay registros.</td></tr>`;
             return;
         }
 
         userTableBody.innerHTML = users.map(user => `
             <tr>
                 <td>
-                    <a href="editar-usuario.html?id=${user.id}" class="user-link" style="display:flex; align-items:center; gap:1rem; text-decoration:none; color: inherit;">
-                        <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--surface-low); display: flex; align-items: center; justify-content: center; color: var(--primary);">
-                            <span class="material-symbols-outlined">person</span>
-                        </div>
-                        <span style="font-weight: 600;">${user.primer_nombre || ''} ${user.segundo_nombre || ''} ${user.primer_apellido || ''} ${user.segundo_apellido || ''}</span>
-                    </a>
+                    <div class="avatar-initials">${getUserInitials(user)}</div>
                 </td>
+                <td>${user.primer_nombre || ''}</td>
+                <td>${user.segundo_nombre || ''}</td>
+                <td>${user.primer_apellido || ''}</td>
+                <td>${user.segundo_apellido || ''}</td>
                 <td>${user.correo}</td>
                 <td>${user.cedula || ''}</td>
                 <td>${user.edad || ''}</td>

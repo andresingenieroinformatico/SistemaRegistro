@@ -33,7 +33,6 @@ erDiagram
         varchar password "Hash Seguro"
         varchar cedula "Documento"
         int edad "Edad"
-        varchar ocupacion "Ocupación"
         varchar status "Activo / Pendiente"
         varchar role "docente / estudiante"
         timestamp fecha "Fecha Registro"
@@ -65,7 +64,6 @@ classDiagram
         - password: string
         - cedula: string
         - edad: int
-        - ocupacion: string
         - fecha: timestamp
         - status: string
         - role: string

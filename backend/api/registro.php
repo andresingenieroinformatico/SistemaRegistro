@@ -6,8 +6,8 @@ header('Content-Type: application/json');
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $data = json_decode(file_get_contents('php://input'), true);
 
-    if (empty($data['primer_nombre']) || empty($data['primer_apellido']) || empty($data['correo']) || empty($data['password']) || empty($data['edad']) || empty($data['ocupacion']) || empty($data['cedula'])) {
-        echo json_encode(['error' => 'Primer nombre, primer apellido, correo, contraseña, edad, ocupación y cédula son obligatorios.']);
+    if (empty($data['primer_nombre']) || empty($data['primer_apellido']) || empty($data['correo']) || empty($data['password']) || empty($data['edad']) || empty($data['cedula'])) {
+        echo json_encode(['error' => 'Primer nombre, primer apellido, correo, contraseña, edad y cédula son obligatorios.']);
         exit;
     }
 
@@ -18,7 +18,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $correo = filter_var(trim($data['correo']), FILTER_VALIDATE_EMAIL);
     $rawPassword = trim($data['password']);
     $edad = intval($data['edad']);
-    $ocupacion = trim($data['ocupacion']);
     $cedula = trim($data['cedula']);
     $role = in_array($data['role'] ?? 'estudiante', ['docente', 'estudiante']) ? $data['role'] ?? 'estudiante' : 'estudiante';
 
@@ -64,8 +63,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             exit;
         }
 
-        $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, password, cedula, edad, ocupacion, status, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute([$nombre, $primerNombre, $segundoNombre ?: null, $primerApellido, $segundoApellido ?: null, $correo, $password, $cedula, $edad, $ocupacion, $status, $role]);
+        $stmt = $pdo->prepare("INSERT INTO usuarios (nombre, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, password, cedula, edad, status, role) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$nombre, $primerNombre, $segundoNombre ?: null, $primerApellido, $segundoApellido ?: null, $correo, $password, $cedula, $edad, $status, $role]);
 
         echo json_encode(['message' => 'Usuario registrado con éxito.']);
     } catch (\Exception $e) {
