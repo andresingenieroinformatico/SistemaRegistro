@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Usuario | Modern Registry</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../static/css/styles.css">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <a href="lista.html" class="logo">
+                    <span class="material-symbols-outlined">how_to_reg</span>
+                    Sistema de Registro
+                </a>
+                <ul class="nav-links">
+                    <li><a href="lista.html">Usuarios</a></li>
+                    <li><a href="#" id="logoutBtn" style="color: var(--accent);">Cerrar Sesión</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="card form-auth">
+            <div class="dashboard-header">
+                <div>
+                    <h2 style="font-size: 2rem; margin-bottom: 0.5rem;">Editar <span class="text-gradient">Usuario</span></h2>
+                    <p style="color: var(--text-muted);">Actualiza los datos del usuario seleccionado.</p>
+                </div>
+                <a href="lista.html" class="btn btn-outline">Volver al listado</a>
+            </div>
+            <form id="editForm">
+                <input type="hidden" id="editUserId">
+                <div id="editError" class="alert-error" style="display: none;">
+                    <span class="material-symbols-outlined" style="font-size: 1.25rem;">error</span>
+                    <span id="editErrorMessage"></span>
+                </div>
+                <div class="form-group">
+                    <label for="editPrimerNombre">Primer Nombre</label>
+                    <input type="text" id="editPrimerNombre" required>
+                </div>
+                <div class="form-group">
+                    <label for="editSegundoNombre">Segundo Nombre (opcional)</label>
+                    <input type="text" id="editSegundoNombre">
+                </div>
+                <div class="form-group">
+                    <label for="editPrimerApellido">Primer Apellido</label>
+                    <input type="text" id="editPrimerApellido" required>
+                </div>
+                <div class="form-group">
+                    <label for="editSegundoApellido">Segundo Apellido (opcional)</label>
+                    <input type="text" id="editSegundoApellido">
+                </div>
+                <div class="form-group">
+                    <label for="editEdad">Edad</label>
+                    <input type="number" id="editEdad" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="editCedula">Cédula</label>
+                    <input type="text" id="editCedula" required>
+                </div>
+                <div class="form-group">
+                    <label for="editCorreo">Correo</label>
+                    <input type="email" id="editCorreo" required>
+                </div>
+                <div class="form-group">
+                    <label for="editRole">Rol</label>
+                    <select id="editRole" required>
+                        <option value="estudiante">Estudiante</option>
+                        <option value="docente">Docente</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="editStatus">Estado</label>
+                    <select id="editStatus" required>
+                        <option value="Activo">Activo</option>
+                        <option value="Pendiente">Pendiente</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 1rem;">Guardar Cambios</button>
+            </form>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2026 Modern Registry. Panel Administrativo Protegido.</p>
+                <ul class="footer-nav">
+                    <li><a href="lista.html">Listado</a></li>
+                </ul>
+            </div>
+        </div>
+    </footer>
+
+    <script src="../../static/js/main.js"></script>
+</body>
+</html>

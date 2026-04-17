@@ -7,8 +7,20 @@ $method = $_SERVER['REQUEST_METHOD'];
 
 switch ($method) {
     case 'GET':
-        // List users with optional role/status filters
+        // Get a single user by ID or list users with optional role/status filters
         try {
+            if (!empty($_GET['id'])) {
+                $stmt = $pdo->prepare("SELECT id, nombre, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, cedula, edad, ocupacion, fecha, status, role FROM usuarios WHERE id = ?");
+                $stmt->execute([intval($_GET['id'])]);
+                $user = $stmt->fetch();
+                if (!$user) {
+                    echo json_encode(['error' => 'Usuario no encontrado.']);
+                    exit;
+                }
+                echo json_encode($user);
+                exit;
+            }
+
             $query = "SELECT id, nombre, primer_nombre, segundo_nombre, primer_apellido, segundo_apellido, correo, cedula, edad, ocupacion, fecha, status, role FROM usuarios";
             $conditions = [];
             $params = [];
